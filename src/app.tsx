@@ -143,13 +143,15 @@ return;
         <ResizablePanel defaultSize={80} className="relative">
 
           <div className="flex flex-col space-y-10 h-screen justify-center items-center overflow-y-scroll ">
-            {!store.aiResponse && !store.selectedChat && (
-              <h1
-                className="dark:text-white text-black absolute top-1/2 text-3xl mb-20"
-              >
+            {!store.aiResponse && !store.selectedChat 
+              ? (
+<h1
+  className="dark:text-white text-black absolute top-1/2 text-3xl mb-20"
+>
                 Ask anything?
-              </h1>
-            )}
+</h1>
+)
+: (
             <div className="flex-1 w-full overflow-y-auto h-screen mb-20 px-4 ">
               {chats
                 && chats
@@ -189,6 +191,7 @@ return;
                     );
                   })}
             </div>
+          )}
             <div className="absolute bottom-0 left-0 w-full bg-zinc-100 dark:bg-zinc-800 border-t border-zinc-200 dark:border-zinc-800 px-4 py-3 text-4xl flex items-center justify-center space-x-3 shadow-md">
               <form
                 onSubmit={(e) => {
