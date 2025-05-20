@@ -26,7 +26,7 @@ function App() {
   const addChat = useMutation(api.chats.add);
   const chatRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
-  const [width, setWidth] = useState(() => {
+  const [width] = useState(() => {
     return window.innerWidth < 768 ? 100 : 20;
   });
 
