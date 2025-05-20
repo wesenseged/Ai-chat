@@ -32,7 +32,7 @@ const useChatStore = create<ChatState>()(set => ({
   isClose: false,
   handleCloseChange: () => set(state => ({ isClose: !state.isClose })),
 
-    // Loading state
+  // Loading state
   isSubmit: false,
   handleSubmitChange: (value: boolean) => set(() => ({ isSubmit: value })),
 

@@ -2,11 +2,11 @@ import { useAuth, UserButton } from "@clerk/clerk-react";
 import { GoogleGenAI } from "@google/genai";
 import { useMutation, useQuery } from "convex/react";
 import Groq from "groq-sdk";
-import { ArrowUpCircle } from "lucide-react";
+import { ArrowUpCircle, MoonIcon, SidebarClose, SidebarOpen, SunIcon } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
 import Markdown from "react-markdown";
-import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/atom-one-dark.css"; // or any other theme
+import rehypeHighlight from "rehype-highlight";
 
 import {
   ResizableHandle,
@@ -103,37 +103,48 @@ function App() {
   return (
     <div className="flex flex-row h-screen bg-zinc-100 dark:bg-zinc-900">
       <ResizablePanelGroup direction="horizontal">
-        <ResizablePanel
-          style={{ width: 0 }}
-          minSize={10}
-          maxSize={25}
-          defaultSize={20}
-          className="bg-zinc-200 dark:bg-zinc-800 p-0 md:pl-4 pt-4 space-y-1 flex flex-col relative"
-        >
-          <SearchChat />
-          {chats
-            ? (
-              <div className="overflow-x-scroll lg:overflow-x-hidden">
-                <ChatLists chats={chats!} title="Today" />
-                <ChatLists chats={chats!} title="Yesterday" />
-                <ChatLists chats={chats!} title="Previous 7 Days" />
-                <ChatLists chats={chats!} title="Previous 30 Days" />
-              </div>
-            )
-            : (
-              <div className="flex flex-col space-y-6 mt-20">
-                <Skeleton className="h-10 w-full bg-white dark:bg-zinc-500 rounded-lg" />
-                <Skeleton className="h-10 w-full bg-white dark:bg-zinc-500 rounded-lg" />
-                <Skeleton className="h-10 w-full bg-white dark:bg-zinc-500 rounded-lg" />
-                <Skeleton className="h-10 w-full bg-white dark:bg-zinc-500 rounded-lg" />
-                <Skeleton className="h-10 w-full bg-white dark:bg-zinc-500 rounded-lg" />
-              </div>
-            )}
-        </ResizablePanel>
+        {
+          store.isClose
+          && (
+            <ResizablePanel
+              style={{ width: 0 }}
+              minSize={10}
+              maxSize={25}
+              defaultSize={20}
+              className="bg-zinc-200 dark:bg-zinc-800 p-0 md:pl-4 pt-4 space-y-1 flex flex-col relative"
+            >
+              <SearchChat />
+              {chats
+                ? (
+                  <div className="overflow-x-scroll lg:overflow-x-hidden">
+                    <ChatLists chats={chats!} title="Today" />
+                    <ChatLists chats={chats!} title="Yesterday" />
+                    <ChatLists chats={chats!} title="Previous 7 Days" />
+                    <ChatLists chats={chats!} title="Previous 30 Days" />
+                  </div>
+                )
+                : (
+                  <div className="flex flex-col space-y-6 mt-20">
+                    <Skeleton className="h-10 w-full bg-white dark:bg-zinc-500 rounded-lg" />
+                    <Skeleton className="h-10 w-full bg-white dark:bg-zinc-500 rounded-lg" />
+                    <Skeleton className="h-10 w-full bg-white dark:bg-zinc-500 rounded-lg" />
+                    <Skeleton className="h-10 w-full bg-white dark:bg-zinc-500 rounded-lg" />
+                    <Skeleton className="h-10 w-full bg-white dark:bg-zinc-500 rounded-lg" />
+                  </div>
+                )}
+            </ResizablePanel>
+          )
+        }
         <ResizableHandle />
         <ResizablePanel defaultSize={80} className="relative">
           <div className="flex flex-col space-y-10 h-screen justify-center items-center overflow-y-scroll ">
-            <div className="absolute top-0 right-0 w-full flex justify-end items-center p-4">
+            <div className="absolute top-0 right-0 w-full flex gap-4 justify-end items-center p-4">
+              <Button onClick={() => store.handleCloseChange()} className="bg-white dark:bg-black hover:bg-zinc-100 dark:hover:bg-zinc-900 ">
+                {store.isClose ? <SidebarOpen className="text-zinc-800 dark:text-zinc-200" /> : <SidebarClose className="text-zinc-800 dark:text-zinc-200" />}
+              </Button>
+              <Button onClick={() => store.handleDarkChange()} className="bg-white dark:bg-black hover:bg-zinc-100 dark:hover:bg-zinc-900 ">
+                {store.isDark ? <SunIcon className="text-zinc-800 dark:text-zinc-200" /> : <MoonIcon className="text-zinc-800 dark:text-zinc-200" />}
+              </Button>
               <UserButton />
             </div>
             {!store.aiResponse && !store.selectedChat

@@ -46,8 +46,7 @@ function ChatLists(props: { chats: Chat[]; title: string }) {
       <h1 className="text-black dark:text-white mb-5">{props.title}</h1>
       {props.chats && props.chats?.filter((chat) => {
         if (store.search) {
-          chat.answer.toLowerCase().includes(store.search.toLowerCase());
-          return isInRange(new Date(chat._creationTime).toISOString().split("T")[0], props.title);
+          return chat.question.toLowerCase().includes(store.search.toLowerCase());
         }
         else {
           return isInRange(new Date(chat._creationTime).toISOString().split("T")[0], props.title);
