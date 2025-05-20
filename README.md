@@ -2,6 +2,9 @@
 
 A modern AI-powered chat application built using **React**, **Convex**, **Zustand**, **Tailwind CSS**, **Clerk**, and **ShadCN UI**. This app enables real-time, authenticated chat experiences with a clean and modular codebase.
 
+## 📸 Preview
+![Screenshot](https://github.com/wesenseged/Ai-chat/blob/main/public/screenshot.png)
+
 ---
 
 ## ✨ Features

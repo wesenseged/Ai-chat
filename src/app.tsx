@@ -2,11 +2,11 @@ import { useAuth, UserButton } from "@clerk/clerk-react";
 import { GoogleGenAI } from "@google/genai";
 import { useMutation, useQuery } from "convex/react";
 import Groq from "groq-sdk";
-import { ArrowUpCircle, MoonIcon, SidebarClose, SidebarOpen, SunIcon } from "lucide-react";
-import { useEffect, useMemo, useRef } from "react";
+import { ArrowUpCircle, Copy, MoonIcon, SidebarClose, SidebarOpen, SunIcon } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Markdown from "react-markdown";
-import "highlight.js/styles/atom-one-dark.css"; // or any other theme
 import rehypeHighlight from "rehype-highlight";
+import "highlight.js/styles/atom-one-dark.css"; // or any other theme
 
 import {
   ResizableHandle,
@@ -30,6 +30,14 @@ function App() {
   const addChat = useMutation(api.chats.add);
   const chatRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
+  const [width, setWidth] = useState(() => {
+    if (window.innerWidth < 768) { /* adjust the breakpoint as needed */
+      return 100;
+    } else {
+      return 20;
+    }
+  });
+
   const ai = useMemo(
     () => new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY }),
     [],
@@ -42,6 +50,8 @@ function App() {
       }),
     [],
   );
+
+
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", store.isDark);
@@ -107,10 +117,11 @@ function App() {
           store.isClose
           && (
             <ResizablePanel
-              style={{ width: 0 }}
-              minSize={10}
-              maxSize={25}
-              defaultSize={20}
+              defaultSize={width}
+              draggable={false}
+              minSize={width == 100 ? 40 : 10}
+              maxSize={width == 100 ? 100 : 25}
+              order={1}
               className="bg-zinc-200 dark:bg-zinc-800 p-0 md:pl-4 pt-4 space-y-1 flex flex-col relative"
             >
               <SearchChat />
@@ -136,9 +147,9 @@ function App() {
           )
         }
         <ResizableHandle />
-        <ResizablePanel defaultSize={80} className="relative">
+        <ResizablePanel draggable={false} order={2} className="relative">
           <div className="flex flex-col space-y-10 h-screen justify-center items-center overflow-y-scroll ">
-            <div className="absolute top-0 right-0 w-full flex gap-4 justify-end items-center p-4">
+            <div className={!store.isClose && width == 100 ? "fixed top-0 right-0 w-full flex flex-col-reverse items-end gap-4 md:gap-4 justify-end mb-10" : "fixed top-0 right-0 w-full flex gap-1 md:gap-4 justify-end items-center p-2 md:p-4 mb-10"}>
               <Button onClick={() => store.handleCloseChange()} className="bg-white dark:bg-black hover:bg-zinc-100 dark:hover:bg-zinc-900 ">
                 {store.isClose ? <SidebarOpen className="text-zinc-800 dark:text-zinc-200" /> : <SidebarClose className="text-zinc-800 dark:text-zinc-200" />}
               </Button>
@@ -188,6 +199,12 @@ function App() {
                             <Markdown rehypePlugins={[rehypeHighlight]}>
                               {chat.answer}
                             </Markdown>
+                            <Copy
+                              onClick={() => {
+                                navigator.clipboard.writeText(chat.answer);
+                              }}
+                              className="hover:bg-zinc-200 hover:dark:bg-zinc-700 w-8 h-8 p-1 rounded-sm cursor-pointer "
+                            />
                           </div>
                         );
                       })}
